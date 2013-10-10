@@ -1,0 +1,14 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use FindBin;
+BEGIN { unshift @INC, "$FindBin::Bin/../lib" }
+
+# Start command line interface for application
+require Mojolicious::Commands;
+my $app=Mojolicious::Commands->start_app('Paasmin');
+$app->config(hypnotoad => {listen => ['http://0.0.0.0:8080'], workers => 4});
+$app->start
+
