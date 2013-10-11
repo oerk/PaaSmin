@@ -7,10 +7,10 @@ apt-get update
 apt-get install -y python-software-properties 
 add-apt-repository ppa:dotcloud/lxc-docker
 apt-get install -y  lxc-docker
-# install route nginx
-apt-get install -y nginx
-# install ftp server
-apt-get install -y vsftpd
+# install route nginx wget sqlite3 vsftpd
+apt-get install -y nginx wget sqlite3 vsftpd
+
+apt-get install -y  libdb4.8-dev
 # add runtime group
 groupadd -g 500 www
 # add web user
@@ -47,10 +47,16 @@ docker  build   -t Paas/nginx-php .
 #docker  build   -t Paas/nginx-tomcat .
 # install mojolicio
 #curl get.mojolicio.us | sh
+ wget http://vicerveza.homeunix.net/~viric/soft/ts/ts-0.7.3.tar.gz  -O /tmp/ts-0.7.3.tar.gz
+
+tar xvfz /tmp/ts-0.7.3.tar.gz
+cd ../ts-0.7.3
+make 
+make install 
 
 # install cpanminus
 apt-get install -y cpanminus
 
 # install Module
-#cpanm Config::General File::Spec Log::Log4perl  Template  DBI  List::Util List::MoreUtils Scalar::Util File::Spec 
+#cpanm Config::General File::Spec Log::Log4perl  Template  DBI  List::Util List::MoreUtils Scalar::Util File::Spe Text::Flowchart DB_File JSON File::Pid AnyEvent::Redis
 #cpanm Net::Docker 
