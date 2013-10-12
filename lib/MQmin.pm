@@ -94,10 +94,12 @@ sub Push_task
     $data->{state}='queued';
     $data->{user}=$user;
     $data->{comnamd}=$command;
+    $data->{comment}='';
     $data->{start_time}='';
     $data->{end_time}='';
     $data->{Enqueue_time}='';
     $data->{run_time}='';
+    $data->{succeed}='';
     #$data->{out}='';
     my $json=encode_json $data;
     #print $json;
@@ -120,11 +122,11 @@ sub Push_task
     $sth->bind_param(3, 'queued');
     unless ($sth->execute)
     {
-        $logger->error("Add task $GUID  $job  $state fail !");
+        $logger->error("Add task $GUID  $job into db  fail !");
         return 0;
     }
     $dbh->commit();
-    $logger->info(qq{INSERT INTO maps VALUES ('$GUID','$job','$state')});
+    $logger->info(qq{INSERT INTO maps VALUES ('$GUID','$job','queued')});
     return $GUID;
 }
 
