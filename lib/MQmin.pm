@@ -89,18 +89,6 @@ sub Push_task
     }
     my $state = `$ts -s $job`;
     chomp $state;
-    my $dbh = $self->{dbh};
-    my $sth = $dbh->prepare(q{INSERT INTO maps VALUES (?,?,?)});
-    $sth->bind_param(1, $GUID);
-    $sth->bind_param(2, $job);
-    $sth->bind_param(3, 'queued');
-    unless ($sth->execute)
-    {
-        $logger->error("Add task $GUID  $job  $state fail !");
-        return 0;
-    }
-    $dbh->commit();
-    $logger->info(qq{INSERT INTO maps VALUES ('$GUID','$job','$state')});
     my $data;
     $data->{id}=$job;
     $data->{state}='queued';
@@ -125,6 +113,18 @@ sub Push_task
     $redis->execute(EXPIRE => [key => 3600]);
     $redis->quit(sub { $logger->info("add $GUID into redis done");});
     $redis->start;
+    my $dbh = $self->{dbh};
+    my $sth = $dbh->prepare(q{INSERT INTO maps VALUES (?,?,?)});
+    $sth->bind_param(1, $GUID);
+    $sth->bind_param(2, $job);
+    $sth->bind_param(3, 'queued');
+    unless ($sth->execute)
+    {
+        $logger->error("Add task $GUID  $job  $state fail !");
+        return 0;
+    }
+    $dbh->commit();
+    $logger->info(qq{INSERT INTO maps VALUES ('$GUID','$job','$state')});
     return $GUID;
 }
 
@@ -133,7 +133,7 @@ sub Get{
     my $guid    = shift;
     my $logger=$self->{logger};
     my $redis=$self->{redis};
-    my $json=$redis->get($guid);
+    my $json=$redis->get($guid) or return 0;
     $json= decode_base64($json);
     return $json;
 }
