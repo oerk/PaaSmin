@@ -126,6 +126,7 @@ while (1)
             {
                 `mv $jobs{$job}->{output} = $poll`;
             }
+            `ts -r $job`;
         }
 
         if ($jobs{$job}->{state} eq 'running')
@@ -148,9 +149,10 @@ while (1)
                       'job run time is  too long and  had been kill by system!';
                     $ref->{succeed} = 'No';
                     $poll{$guid} = $ref;
+                    `ts -r $job`;
                     if (-f $jobs{$job}->{output})
                     {
-                        `mv $jobs{$job}->{output} = $poll`;
+                        `mv $jobs{$job}->{output}  $poll`;
                     }
                 }
 
